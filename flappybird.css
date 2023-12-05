@@ -10,10 +10,12 @@ body {
   /* background-color: skyblue; */
   background-image: url("./3newflappybirdbg.png");
   border-radius: 10px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 }
 
 #centered-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
@@ -21,4 +23,11 @@ body {
 
 canvas {
   background-color: #f0f0f0;
+}
+
+.title {
+  font-size: 30px;
+  font-weight: bold;
+  margin-top: 1px;
+  margin-bottom: 1px;
 }

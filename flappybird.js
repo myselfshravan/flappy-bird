@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
   );
   console.log(
     "%cLooking for secrets, are we? 😏",
-    "color: #777; font-size: small;"
+    "color: #FF4500; font-size: small;"
   );
   console.log("%cJust enjoy the game! 🎮", "color: green; font-size: medium;");
   console.log(
