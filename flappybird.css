@@ -1,9 +1,24 @@
 body {
-    font-family:'Courier New', Courier, monospace;
-    text-align: center;
+  font-family: "Courier New", Courier, monospace;
+  text-align: center;
+  height: 100%;
+  margin: 0;
+  overflow: hidden; /* Optional: Hide scrollbars */
 }
 
 #board {
-    /* background-color: skyblue; */
-    background-image: url("./flappybirdbg.png");
+  /* background-color: skyblue; */
+  background-image: url("./3newflappybirdbg.png");
+  border-radius: 10px;
+}
+
+#centered-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+canvas {
+  background-color: #f0f0f0;
 }
