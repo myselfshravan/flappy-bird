@@ -43,10 +43,15 @@ window.onload = function () {
   a.width = bW;
   cxt = a.getContext("2d");
 
-  bImg = new Image();
-  bImg.src = "./dangecropped.png";
-  bImg.onload = function () {
-    cxt.drawImage(bImg, br.x, br.y, br.w, br.h);
+  //draw flappy bird
+  // context.fillStyle = "green";
+  // context.fillRect(bird.x, bird.y, bird.width, bird.height);
+
+  //load images
+  birdImg = new Image();
+  birdImg.src = "./dangecropped.png";
+  birdImg.onload = function () {
+    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
   };
 
   tpImg = new Image();
