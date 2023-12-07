@@ -1,70 +1,63 @@
-//board
-let board;
-let boardWidth = 360;
-let boardHeight = 640;
-// let boardWidth = 1024;
-// let boardHeight = 1792;
-let context;
+// Variables renamed and logic split into smaller functions
+let a;
+let bW = 360;
+let bH = 640;
+let cxt;
 
-//bird
-let birdWidth = 34; //width/height ratio = 408/228 = 17/12
-let birdHeight = 24;
-let birdX = boardWidth / 8;
-let birdY = boardHeight / 2;
-let birdImg;
+let brW = 34;
+let brH = 24;
+let brX = bW / 8;
+let brY = bH / 2;
+let bImg;
 
-let bird = {
-  x: birdX,
-  y: birdY,
-  width: birdWidth,
-  height: birdHeight,
+let br = {
+  x: brX,
+  y: brY,
+  w: brW,
+  h: brH,
 };
 
-//pipes
-let pipeArray = [];
-let pipeWidth = 64; //width/height ratio = 384/3072 = 1/8
-let pipeHeight = 512;
-let pipeX = boardWidth;
-let pipeY = 0;
+let pA = [];
+let pW = 64;
+let pH = 512;
+let pX = bW;
+let pY = 0;
 
-let topPipeImg;
-let bottomPipeImg;
+let tpImg;
+let bpImg;
 
-//physics
-let velocityX = -2; //pipes moving left speed
-let velocityY = 0; //bird jump speed
-let gravity = 0.4;
+let vX = -2;
+let vY = 0;
+let g = 0.4;
 
-let gameOver = false;
-let score = 0;
-let win_score = 10;
+let go = false;
+let sc = 0;
+let wS = 10;
+
+let r1 = Math.random();
+let r2 = "unused";
 
 window.onload = function () {
-  board = document.getElementById("board");
-  board.height = boardHeight;
-  board.width = boardWidth;
-  context = board.getContext("2d"); //used for drawing on the board
+  a = document.getElementById("board");
+  a.height = bH;
+  a.width = bW;
+  cxt = a.getContext("2d");
 
-  //draw flappy bird
-  // context.fillStyle = "green";
-  // context.fillRect(bird.x, bird.y, bird.width, bird.height);
-
-  //load images
-  birdImg = new Image();
-  birdImg.src = "./flappybird.png";
-  birdImg.onload = function () {
-    context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+  bImg = new Image();
+  bImg.src = "./dangecropped.png";
+  bImg.onload = function () {
+    cxt.drawImage(bImg, br.x, br.y, br.w, br.h);
   };
 
-  topPipeImg = new Image();
-  topPipeImg.src = "./toppipe.png";
+  tpImg = new Image();
+  tpImg.src = "./toppipe.png";
 
-  bottomPipeImg = new Image();
-  bottomPipeImg.src = "./bottompipe.png";
+  bpImg = new Image();
+  bpImg.src = "./bottompipe.png";
 
-  requestAnimationFrame(update);
-  setInterval(placePipes, 1500); //every 1.5 seconds
-  document.addEventListener("keydown", moveBird);
+  animFrame(u);
+  setInterval(pP, 1500);
+  document.addEventListener("keydown", mB);
 };
 
 function fFC() {
@@ -85,162 +78,145 @@ function bTS(b) {
 }
 
 function cOL(o) {
-  console.log("You found the flag!, CLOSE THE CONSOLE!");
+  console.log("FLAG FOUND, CLOSE CONSOLE");
 }
 
 function dFC(t) {
-  displayFlagCode(t);
+  dFCode(t);
 }
 
-function displayFlagCode(flagCode) {
-  const fontSize = 25;
-  const padding = 10;
-  const textX = 5;
-  const textY = boardHeight / 2 + 80;
-  context.font = "bold " + fontSize + "px sans-serif";
+function dFCode(fC) {
+  const fS = 25;
+  const p = 10;
+  const tX = 5;
+  const tY = bH / 2 + 80;
+  cxt.font = "bold " + fS + "px sans-serif";
 
-  const textMeasure = context.measureText(flagCode);
-  const textWidth = textMeasure.width;
-  const textHeight = fontSize;
+  const tM = cxt.measureText(fC);
+  const tW = tM.width;
+  const tH = fS;
 
-  context.fillStyle = "rgba(0, 0, 0, 0.6)";
-  context.fillRect(
-    textX - padding / 2,
-    textY - textHeight,
-    textWidth + padding,
-    textHeight + padding / 2
-  );
+  cxt.fillStyle = "rgba(0, 0, 0, 0.6)";
+  cxt.fillRect(tX - p / 2, tY - tH, tW + p, tH + p / 2);
 
-  context.fillStyle = "white";
-  context.fillText(flagCode, textX, textY);
+  cxt.fillStyle = "white";
+  cxt.fillText(fC, tX, tY);
 }
-function displayEndGameMessage() {
-  context.fillStyle = "red";
-  context.font = "30px sans-serif";
-  context.fillText("GAME OVER", 5, 90);
 
-  if (score >= win_score) {
-    context.font = "20px sans-serif";
-    context.fillText("You found the flag!", 5, boardHeight / 2 + 40);
+function eGMsg() {
+  cxt.fillStyle = "red";
+  cxt.font = "30px sans-serif";
+  cxt.fillText("GAME OVER", 5, 90);
+
+  if (sc >= wS) {
+    cxt.font = "20px sans-serif";
+    cxt.fillText("Flag found!", 5, bH / 2 + 40);
   }
 }
 
-function update() {
-  requestAnimationFrame(update);
-  if (gameOver) {
-    displayEndGameMessage();
+function u() {
+  animFrame(u);
+  if (go) {
+    eGMsg();
     return;
   }
 
-  if (score >= win_score && !gameOver) {
+  if (sc >= wS && !go) {
     fFC();
-    gameOver = true;
+    go = true;
     return;
   }
 
-  context.clearRect(0, 0, board.width, board.height);
+  cxt.clearRect(0, 0, a.width, a.height);
 
-  //bird
-  velocityY += gravity;
-  // bird.y += velocityY;
-  bird.y = Math.max(bird.y + velocityY, 0); //apply gravity to current bird.y, limit the bird.y to top of the canvas
-  context.drawImage(birdImg, bird.x, bird.y, bird.width, bird.height);
+  vY += g;
+  br.y = Math.max(br.y + vY, 0);
+  cxt.drawImage(bImg, br.x, br.y, br.w, br.h);
 
-  if (bird.y > board.height) {
-    gameOver = true;
+  if (br.y > bH) {
+    go = true;
   }
 
-  //pipes
-  for (let i = 0; i < pipeArray.length; i++) {
-    let pipe = pipeArray[i];
-    pipe.x += velocityX;
-    context.drawImage(pipe.img, pipe.x, pipe.y, pipe.width, pipe.height);
+  for (let i = 0; i < pA.length; i++) {
+    let p = pA[i];
+    p.x += vX;
+    cxt.drawImage(p.img, p.x, p.y, p.w, p.h);
 
-    if (!pipe.passed && bird.x > pipe.x + pipe.width) {
-      score += 0.5; //0.5 because there are 2 pipes! so 0.5*2 = 1, 1 for each set of pipes
-      pipe.passed = true;
+    if (!p.passed && br.x > p.x + p.w) {
+      sc += 0.5;
+      p.passed = true;
     }
 
-    if (detectCollision(bird, pipe)) {
-      gameOver = true;
+    if (dC(br, p)) {
+      go = true;
     }
   }
 
-  //clear pipes
-  while (pipeArray.length > 0 && pipeArray[0].x < -pipeWidth) {
-    pipeArray.shift(); //removes first element from the array
+  while (pA.length > 0 && pA[0].x < -pW) {
+    pA.shift();
   }
 
-  //score
-  context.fillStyle = "white";
-  context.font = "45px sans-serif";
-  context.fillText(score, 5, 45);
-
-  //   if (gameOver) {
-  //     context.fillText("GAME OVER", 5, 90);
-  //   }
+  cxt.fillStyle = "white";
+  cxt.font = "45px sans-serif";
+  cxt.fillText(sc, 5, 45);
 }
 
-function placePipes() {
-  if (gameOver) {
+function pP() {
+  if (go) {
     return;
   }
 
-  //(0-1) * pipeHeight/2.
-  // 0 -> -128 (pipeHeight/4)
-  // 1 -> -128 - 256 (pipeHeight/4 - pipeHeight/2) = -3/4 pipeHeight
-  let randomPipeY = pipeY - pipeHeight / 4 - Math.random() * (pipeHeight / 2);
-  let openingSpace = board.height / 4;
+  let rPY = pY - pH / 4 - Math.random() * (pH / 2);
+  let oS = bH / 4;
 
-  let topPipe = {
-    img: topPipeImg,
-    x: pipeX,
-    y: randomPipeY,
-    width: pipeWidth,
-    height: pipeHeight,
+  let tP = {
+    img: tpImg,
+    x: pX,
+    y: rPY,
+    w: pW,
+    h: pH,
     passed: false,
   };
-  pipeArray.push(topPipe);
+  pA.push(tP);
 
-  let bottomPipe = {
-    img: bottomPipeImg,
-    x: pipeX,
-    y: randomPipeY + pipeHeight + openingSpace,
-    width: pipeWidth,
-    height: pipeHeight,
+  let bP = {
+    img: bpImg,
+    x: pX,
+    y: rPY + pH + oS,
+    w: pW,
+    h: pH,
     passed: false,
   };
-  pipeArray.push(bottomPipe);
+  pA.push(bP);
 }
 
-function moveBird(e) {
+function mB(e) {
   if (
     e.type === "touchstart" ||
     e.code == "Space" ||
     e.code == "ArrowUp" ||
     e.code == "KeyX"
   ) {
-    //jump
-    velocityY = -6;
+    vY = -6;
 
-    //reset game
-    if (gameOver && score < win_score) {
-      bird.y = birdY;
-      pipeArray = [];
-      score = 0;
-      gameOver = false;
+    if (go && sc < wS) {
+      br.y = brY;
+      pA = [];
+      sc = 0;
+      go = false;
     }
   }
 }
-document.addEventListener("touchstart", moveBird);
+document.addEventListener("touchstart", mB);
 
-function detectCollision(a, b) {
+function dC(a, b) {
   return (
-    a.x < b.x + b.width && //a's top left corner doesn't reach b's top right corner
-    a.x + a.width > b.x && //a's top right corner passes b's top left corner
-    a.y < b.y + b.height && //a's top left corner doesn't reach b's bottom left corner
-    a.y + a.height > b.y
-  ); //a's bottom left corner passes b's top left corner
+    a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y
+  );
+}
+
+function animFrame(callback) {
+  requestAnimationFrame(callback);
 }
 
 document.addEventListener("DOMContentLoaded", (event) => {
